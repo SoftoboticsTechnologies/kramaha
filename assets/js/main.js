@@ -19,7 +19,17 @@
     toggle.setAttribute('aria-expanded', String(open));
     toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
     nav.classList.toggle('is-open', open);
+    if (open) sizeNav();
   }
+  // Fit the open panel to the space actually left below the header
+  // (the top bar may still be on screen, e.g. on short landscape phones)
+  function sizeNav() {
+    var space = window.innerHeight - header.getBoundingClientRect().bottom;
+    nav.style.setProperty('--nav-max', Math.max(space, 200) + 'px');
+  }
+  window.addEventListener('resize', function () {
+    if (nav.classList.contains('is-open')) sizeNav();
+  });
 
   toggle.addEventListener('click', function () {
     setNav(toggle.getAttribute('aria-expanded') !== 'true');
@@ -38,7 +48,87 @@
   });
   window.matchMedia('(min-width: 1024px)').addEventListener('change', function (mq) {
     if (mq.matches) setNav(false);
+    closeSubmenus();
   });
+
+  /* ---------- Submenus (Services / Counseling) ---------- */
+  var subToggles = document.querySelectorAll('.sub-toggle');
+
+  function setSub(btn, open) {
+    btn.setAttribute('aria-expanded', String(open));
+    btn.closest('.has-sub').classList.toggle('is-open', open);
+  }
+  function closeSubmenus(except) {
+    subToggles.forEach(function (b) { if (b !== except) setSub(b, false); });
+  }
+
+  subToggles.forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = btn.getAttribute('aria-expanded') !== 'true';
+      closeSubmenus(btn);
+      setSub(btn, open);
+    });
+  });
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('.has-sub')) closeSubmenus();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    var openItem = document.querySelector('.has-sub.is-open');
+    if (openItem) {
+      closeSubmenus();
+      openItem.querySelector('.sub-toggle').focus();
+    }
+  });
+  // Desktop: a submenu opened by click closes when focus leaves it,
+  // and hovering another menu closes any click-opened one
+  document.querySelectorAll('.has-sub').forEach(function (item) {
+    item.addEventListener('mouseenter', function () {
+      if (window.innerWidth >= 1024) closeSubmenus(item.querySelector('.sub-toggle'));
+    });
+    item.addEventListener('focusout', function (e) {
+      if (window.innerWidth >= 1024 && !item.contains(e.relatedTarget)) {
+        setSub(item.querySelector('.sub-toggle'), false);
+      }
+    });
+  });
+
+  /* ---------- Back to top ---------- */
+  var toTop = document.querySelector('.to-top');
+  if (toTop) {
+    var toggleTop = function () { toTop.classList.toggle('is-visible', window.scrollY > 700); };
+    window.addEventListener('scroll', toggleTop, { passive: true });
+    toggleTop();
+    toTop.addEventListener('click', function () {
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+    });
+  }
+
+  /* ---------- Copyright year ---------- */
+  document.querySelectorAll('[data-year]').forEach(function (el) {
+    el.textContent = String(new Date().getFullYear());
+  });
+
+  /* ---------- In-page sub navigation: highlight current section ---------- */
+  var subnavLinks = Array.prototype.slice.call(document.querySelectorAll('.subnav a[href^="#"]'));
+  var spyTargets = subnavLinks.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
+  if (subnavLinks.length) {
+    var spy = function () {
+      var line = window.innerHeight * 0.35;
+      var active = -1;
+      spyTargets.forEach(function (el, i) {
+        if (el && el.getBoundingClientRect().top <= line) active = i;
+      });
+      // At the very bottom, the last section is current even if short
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = spyTargets.length - 1;
+      subnavLinks.forEach(function (a, i) { a.classList.toggle('is-active', i === active); });
+    };
+    window.addEventListener('scroll', spy, { passive: true });
+    window.addEventListener('resize', spy);
+    spy();
+  }
 
   /* ---------- Reveal on scroll ---------- */
   var reveals = document.querySelectorAll('.reveal');
@@ -56,13 +146,40 @@
     reveals.forEach(function (el) { el.classList.add('is-visible'); });
   }
 
-  /* ---------- Contact form ---------- */
-  var form = document.getElementById('contact-form');
-  if (form) initForm(form);
+  /* ---------- Contact forms (page form + Need Advice? popup) ---------- */
+  document.querySelectorAll('form.contact-form').forEach(initForm);
+
+  /* ---------- Need Advice? popup ---------- */
+  var adviceModal = document.getElementById('advice-modal');
+  if (adviceModal && typeof adviceModal.showModal === 'function') {
+    var adviceTrigger = null;
+    var adviceTitle = adviceModal.querySelector('#am-title');
+    var adviceTitleDefault = adviceTitle.textContent;
+    document.querySelectorAll('[data-open-advice]').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        adviceTrigger = btn;
+        // A trigger can give the popup its own heading, e.g. data-open-advice="Let’s Begin the Conversation"
+        adviceTitle.textContent = btn.getAttribute('data-open-advice') || adviceTitleDefault;
+        setNav(false);
+        adviceModal.showModal();
+        document.body.style.overflow = 'hidden';
+        adviceModal.querySelector('input:not([type=hidden]):not([tabindex="-1"])').focus();
+      });
+    });
+    adviceModal.addEventListener('click', function (e) {
+      // Close on the close button or a click on the backdrop (outside the panel)
+      if (e.target.closest('[data-close-advice]') || e.target === adviceModal) adviceModal.close();
+    });
+    adviceModal.addEventListener('close', function () {
+      document.body.style.overflow = '';
+      if (adviceTrigger) adviceTrigger.focus();
+    });
+  }
 
   function initForm(form) {
-    var submitBtn = document.getElementById('cf-submit');
-    var status = document.getElementById('cf-status');
+    var submitBtn = form.querySelector('[type=submit]');
+    var status = form.querySelector('.form-status');
     var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
     var rules = {

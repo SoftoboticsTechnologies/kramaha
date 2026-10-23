@@ -132,8 +132,7 @@ ${subLinks(P, 'courses/', COUNSELING)}
             </div>
           </li>
           <li class="nav-item"><a class="nav-link" href="${P}contact/"${current('contact', page)}>Contact</a></li>
-          <li class="nav-item"><a class="nav-link" href="${P}booking/"${current('booking', page)}>Booking</a></li>
-          <li class="nav-item nav-cta-item"><a class="btn btn-primary nav-cta" href="${P}contact/#conversation" data-open-advice aria-haspopup="dialog">Need Advice?</a></li>
+          <li class="nav-item nav-cta-item"><a class="btn btn-primary nav-cta" href="${P}booking/"${current('booking', page)}>Book a Slot</a><a class="btn btn-primary nav-cta" href="${P}contact/#conversation" data-open-advice aria-haspopup="dialog">Need Advice?</a></li>
         </ul>
       </nav>
     </div>

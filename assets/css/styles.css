@@ -418,6 +418,7 @@ a:hover { color: var(--navy); }
   .nav-cta-item { position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
 }
 
+.nav-cta-item { gap: 10px; }
 .nav-cta { min-height: 44px; padding: 10px 22px; }
 
 .nav-toggle {
@@ -510,7 +511,7 @@ a:hover { color: var(--navy); }
   .submenu-col + .submenu-col { border-left: 0; padding-left: 0; }
   .submenu-label { margin: 8px 0 4px; }
   .submenu a.submenu-link { padding: 12px 14px; border-left: 2px solid var(--border); border-radius: 0; }
-  .nav-cta-item { border-bottom: 0; padding-top: 20px; }
+  .nav-cta-item { flex-direction: column; border-bottom: 0; padding-top: 20px; }
   .nav-cta { width: 100%; min-height: 50px; }
 }
 
@@ -1497,9 +1498,15 @@ html:has(.subnav) { scroll-padding-top: calc(var(--header-h) + 76px); }
   transition: background-color .2s, color .2s;
 }
 .advice-modal-close:hover { background: var(--navy); color: var(--white); }
+/* Narrow desktops: not enough room to center the links on the page between
+   the logo and both CTA buttons, so the header flows normally instead */
+@media (min-width: 1024px) and (max-width: 1279.98px) {
+  .primary-nav { position: static; inset: auto; pointer-events: auto; }
+  .nav-cta-item { position: static; transform: none; margin-left: 8px; gap: 8px; }
+  .nav-cta { padding-inline: 16px; }
+}
 @media (min-width: 1024px) and (max-width: 1199.98px) {
   .nav-link { padding-inline: 10px; }
-  .nav-cta-item { margin-left: 6px; }
 }
 
 /* ---------- Responsive refinements ---------- */

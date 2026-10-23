@@ -21,6 +21,7 @@ const PAGES = {
   services: ['e-books/index.html', '../'],
   counseling: ['courses/index.html', '../'],
   contact: ['contact/index.html', '../'],
+  booking: ['booking/index.html', '../'],
 };
 
 const PHONE_HREF = 'tel:+919538969843';
@@ -131,6 +132,7 @@ ${subLinks(P, 'courses/', COUNSELING)}
             </div>
           </li>
           <li class="nav-item"><a class="nav-link" href="${P}contact/"${current('contact', page)}>Contact</a></li>
+          <li class="nav-item"><a class="nav-link" href="${P}booking/"${current('booking', page)}>Booking</a></li>
           <li class="nav-item nav-cta-item"><a class="btn btn-primary nav-cta" href="${P}contact/#conversation" data-open-advice aria-haspopup="dialog">Need Advice?</a></li>
         </ul>
       </nav>
@@ -168,6 +170,7 @@ function footer(page, P) {
           <li><a href="${P}e-books/">Services</a></li>
           <li><a href="${P}courses/">Counseling</a></li>
           <li><a href="${P}contact/">Contact</a></li>
+          <li><a href="${P}booking/">Booking</a></li>
         </ul>
       </nav>
 

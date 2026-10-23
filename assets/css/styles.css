@@ -1529,3 +1529,73 @@ html:has(.subnav) { scroll-padding-top: calc(var(--header-h) + 76px); }
   .hero-content { padding-block: 40px 28px; }
   .page-hero { padding-block: 36px; }
 }
+
+/* ---------- Booking page ---------- */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 24px;
+  max-width: 760px;
+  margin-inline: auto;
+}
+.price-card {
+  display: flex;
+  flex-direction: column;
+  padding: 32px 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+}
+.price-region { font-family: var(--font-head); font-weight: 700; color: var(--navy); }
+.price-amount {
+  margin: 12px 0 8px;
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: clamp(2.75rem, 6vw, 3.5rem);
+  line-height: 1;
+  color: var(--navy);
+}
+.price-currency { margin-right: 2px; font-size: .6em; vertical-align: .35em; }
+.price-note { margin-bottom: 24px; color: var(--muted); font-size: .9375rem; }
+.price-card .btn { margin-top: auto; }
+
+.pay-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: center;
+}
+.pay-qr { margin: 0; justify-self: center; width: 100%; max-width: 440px; }
+.pay-qr img {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+  box-shadow: var(--shadow);
+}
+.pay-steps { margin: 20px 0 28px; padding-left: 1.25em; }
+.pay-steps li + li { margin-top: 8px; }
+.pay-disclaimer {
+  margin-bottom: 28px;
+  padding: 18px 20px;
+  border-left: 4px solid #25D366;
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  box-shadow: var(--shadow-sm);
+}
+.pay-disclaimer-title {
+  margin-bottom: 6px;
+  font-family: var(--font-head);
+  font-weight: 700;
+  color: var(--navy);
+}
+.pay-disclaimer p:last-child { margin-bottom: 0; color: var(--muted); }
+.btn-whatsapp { background: #25D366; color: #0b2e1c; }
+.btn-whatsapp:hover { background: #1fb457; color: #0b2e1c; }
+@media (max-width: 767.98px) {
+  .pay-grid { grid-template-columns: 1fr; }
+  .btn-whatsapp { width: 100%; }
+}

@@ -1555,6 +1555,12 @@ html:has(.subnav) { scroll-padding-top: calc(var(--header-h) + 76px); }
   box-shadow: var(--shadow-sm);
   text-align: center;
 }
+.price-flag {
+  display: block;
+  margin: 0 auto 14px;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px var(--border), var(--shadow-sm);
+}
 .price-region { font-family: var(--font-head); font-weight: 700; color: var(--navy); }
 .price-amount {
   margin: 12px 0 8px;
